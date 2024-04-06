@@ -33,6 +33,10 @@ XMR: 42hKayRoEAw4D6G6t8mQHPJHQcXqofjFuVfavqKeNMNUZfeJLJAcNU19i1bGdDvcdN6romiSscW
 - Archiving tweets/profiles
 - Developer API
 
+## New Features
+
+- Likes tab
+
 ## Resources
 
 The wiki contains
@@ -97,6 +101,12 @@ $ nimble build -d:release
 $ nimble scss
 $ nimble md
 $ cp nitter.example.conf nitter.conf
+```
+
+Edit `twitter_oauth.sh` with your Twitter account name and password.
+
+```
+$ ./twitter_oauth.sh | tee -a guest_accounts.jsonl
 ```
 
 Set your hostname, port, HMAC key, https (must be correct for cookies), and
