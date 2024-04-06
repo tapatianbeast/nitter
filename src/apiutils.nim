@@ -155,6 +155,7 @@ proc fetch*(url: Uri; api: Api; additional_headers: HttpHeaders = newHttpHeaders
       if body.startsWith('{') or body.startsWith('['):
         result = parseJson(body)
       else:
+        echo resp.status, ": ", body, " --- url: ", url
         result = newJNull()
 
       let error = result.getError
