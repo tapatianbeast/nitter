@@ -154,22 +154,7 @@ proc fetch*(url: Uri; api: Api; additional_headers: HttpHeaders = newHttpHeaders
     fetchImpl(body, additional_headers):
       if body.startsWith('{') or body.startsWith('['):
         result = parseJson(body)
-        echo "-------------"
-        echo "api: ", api
-        echo "-------------"
-        echo "url: ", url
-        echo "-------------"
-        echo "added headers: ", additional_headers
-        echo "-------------"
       else:
-        echo resp.status, ": ", body, " --- url: ", url
-        echo "*************"
-        echo url
-        echo "*************"
-        echo api
-        echo "*************"
-        echo additional_headers
-        echo "*************"
         result = newJNull()
 
       let error = result.getError
