@@ -11,7 +11,6 @@ const
   photoRail* = api / "1.1/statuses/media_timeline.json"
 
   timelineApi = api / "2/timeline"
-  favorites* = timelineApi / "favorites"
 
   graphql = api / "graphql"
   graphUser* = graphql / "u7wQyGi6oExe8_TRWGMq4Q/UserResultByScreenNameQuery"
@@ -30,6 +29,7 @@ const
   graphRetweeters* = graphql / "RCR9gqwYD1NEgi9FWzA50A/Retweeters"
   graphFollowers* = graphql / "EAqBhgcGr_qPOzhS4Q3scQ/Followers"
   graphFollowing* = graphql / "JPZiqKjET7_M1r5Tlr8pyA/Following"
+  favorites* = graphql / "eSSNbhECHHWWALkkQq-YTA/Likes"
 
   timelineParams* = {
     "include_can_media_tag": "1",
@@ -50,6 +50,7 @@ const
   gqlFeatures* = """{
   "android_graphql_skip_api_media_color_palette": false,
   "blue_business_profile_image_shape_enabled": false,
+  "c9s_tweet_anatomy_moderator_badge_enabled": false,
   "creator_subscriptions_subscription_count_enabled": false,
   "creator_subscriptions_tweet_preview_api_enabled": true,
   "freedom_of_speech_not_reach_fetch_enabled": false,
@@ -71,6 +72,7 @@ const
   "responsive_web_twitter_article_tweet_consumption_enabled": false,
   "responsive_web_twitter_blue_verified_badge_is_enabled": true,
   "rweb_lists_timeline_redesign_enabled": true,
+  "rweb_video_timestamps_enabled": true,
   "spaces_2022_h2_clipping": true,
   "spaces_2022_h2_spaces_communities": true,
   "standardized_nudges_misinfo": false,
