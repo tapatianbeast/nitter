@@ -71,10 +71,20 @@ proc getGraphListMembers*(list: List; after=""): Future[Result[User]] {.async.} 
 
 proc getFavorites*(id: string; cfg: Config; after=""): Future[Profile] {.async.} =
   if id.len == 0: return
-  let
-    ps = genParams({"userId": id}, after)
-    url = consts.favorites / (id & ".json") ? ps
-  result = parseTimeline(await fetch(url, Api.favorites), after)
+  var
+    variables = %*{
+      "userId": id,
+      "includePromotedContent":false,
+      "withClientEventToken":false,
+      "withBirdwatchNotes":false,
+      "withVoice":true,
+      "withV2Timeline":false
+    }
+  if after.len > 0:
+    variables["cursor"] = % after
+  let  
+    url = consts.favorites ? {"variables": $variables, "features": gqlFeatures}
+  result = parseGraphTimeline(await fetch(url, Api.favorites), after)
 
 proc getGraphTweetResult*(id: string): Future[Tweet] {.async.} =
   if id.len == 0: return
