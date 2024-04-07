@@ -33,6 +33,7 @@ proc parseGraphUser(js: JsonNode): User =
   var user = js{"user_result", "result"}
   if user.isNull:
     user = ? js{"user_results", "result"}
+  
   result = parseUser(user{"legacy"})
 
   if result.verifiedType == VerifiedType.none and user{"is_blue_verified"}.getBool(false):
@@ -534,7 +535,8 @@ proc parseGraphTimeline*(js: JsonNode; root: string; after=""): Profile =
 
   let instructions =
     if root == "list": ? js{"data", "list", "timeline_response", "timeline", "instructions"}
-    else: ? js{"data", "user_result", "result", "timeline_response", "timeline", "instructions"}
+      elif root == "user": ? js{"data", "user_result", "result", "timeline_response", "timeline", "instructions"}
+    else: ? js{"data", "user", "result", "timeline", "timeline", "instructions"}
 
   if instructions.len == 0:
     return
@@ -545,6 +547,21 @@ proc parseGraphTimeline*(js: JsonNode; root: string; after=""): Profile =
         let entryId = e{"entryId"}.getStr
         if entryId.startsWith("tweet"):
           with tweetResult, e{"content", "content", "tweetResult", "result"}:
+            let tweet = parseGraphTweet(tweetResult, false)
+            if not tweet.available:
+              tweet.id = parseBiggestInt(entryId.getId())
+            result.tweets.content.add tweet
+        elif "-conversation-" in entryId or entryId.startsWith("homeConversation"):
+          let (thread, self) = parseGraphThread(e)
+          result.tweets.content.add thread.content
+        elif entryId.startsWith("cursor-bottom"):
+          result.tweets.bottom = e{"content", "value"}.getStr
+    # TODO cleanup
+    if i{"type"}.getStr == "TimelineAddEntries":
+      for e in i{"entries"}:
+        let entryId = e{"entryId"}.getStr
+        if entryId.startsWith("tweet"):
+          with tweetResult, e{"content", "itemContent", "tweet_results", "result"}:
             let tweet = parseGraphTweet(tweetResult, false)
             if not tweet.available:
               tweet.id = parseBiggestInt(entryId.getId())

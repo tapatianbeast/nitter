@@ -49,7 +49,7 @@ proc getOauthHeader(url, oauthToken, oauthTokenSecret: string): string =
 
 proc genHeaders*(url, oauthToken, oauthTokenSecret: string): HttpHeaders =
   let header = getOauthHeader(url, oauthToken, oauthTokenSecret)
-
+  
   result = newHttpHeaders({
     "connection": "keep-alive",
     "authorization": header,
@@ -148,11 +148,6 @@ template retry(bod) =
     bod
 
 proc fetch*(url: Uri; api: Api; additional_headers: HttpHeaders = newHttpHeaders()): Future[JsonNode] {.async.} =
-
-  if len(cfg.cookieHeader) != 0:
-      additional_headers.add("Cookie", cfg.cookieHeader)
-  if len(cfg.xCsrfToken) != 0:
-      additional_headers.add("x-csrf-token", cfg.xCsrfToken)
 
   retry:
     var body: string
