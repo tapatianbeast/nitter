@@ -26,12 +26,8 @@ jobs:
     - name: Build Nitter binary for ARMv7
       run: |
         docker buildx create --use
-        docker buildx build --platform linux/arm/v7 --rm -v $(pwd):/src -w /src arm32v7/alpine:latest sh -c '
-          apk add --no-cache git build-base curl
-          curl https://nim-lang.org/choosenim/init.sh -sSf | sh -s -- -y
-          export PATH=$HOME/.nimble/bin:$PATH
-          nimble build -d:release
-        '
+        docker buildx build --platform linux/arm/v7 --rm --progress=plain --build-arg context=./ . \
+        -f Dockerfile.armv7
 
     - name: Upload compiled binary
       uses: actions/upload-artifact@v4
