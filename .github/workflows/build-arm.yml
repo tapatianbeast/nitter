@@ -1,0 +1,35 @@
+name: Build Nitter for Raspberry Pi 3B+
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Nitter binary for ARMv7
+      run: |
+        docker run --rm -v $(pwd):/src -w /src multiarch/alpine:armv7-latest-stable sh -c '
+          apk add --no-cache git build-base nim
+          nimble build -d:release
+        '
+
+    - name: Upload compiled binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: nitter-armv7
+        path: nitter
