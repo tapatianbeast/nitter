@@ -28,8 +28,13 @@ jobs:
         docker buildx create --use
         docker buildx build --platform linux/arm/v7 --rm --progress=plain --load .
 
+    - name: Locate nitter binary and upload it
+      run: |
+        docker cp $(docker ps -q -l):/src/nitter/nitter ./nitter
+        ls -l ./nitter # Verify if the binary exists
+
     - name: Upload compiled binary
       uses: actions/upload-artifact@v4
       with:
         name: nitter-armv7
-        path: nitter
+        path: ./nitter
