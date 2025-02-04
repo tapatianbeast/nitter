@@ -17,13 +17,16 @@ jobs:
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
+      with:
+        architectures: arm/v7
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
     - name: Build Nitter binary for ARMv7
       run: |
-        docker run --rm -v $(pwd):/src -w /src arm32v7/alpine:latest sh -c '
+        docker buildx create --use
+        docker buildx build --platform linux/arm/v7 --rm -v $(pwd):/src -w /src arm32v7/alpine:latest sh -c '
           apk add --no-cache git build-base curl
           curl https://nim-lang.org/choosenim/init.sh -sSf | sh -s -- -y
           export PATH=$HOME/.nimble/bin:$PATH
@@ -35,4 +38,3 @@ jobs:
       with:
         name: nitter-armv7
         path: nitter
-
